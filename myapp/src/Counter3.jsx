@@ -1,0 +1,21 @@
+import { useEffect, useState } from "react";
+
+function Counter3() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("Hello from useEffect");
+    return () => {
+      console.log("clean up function 정리 함수");
+    };
+  }, [count]);
+
+  return (
+    <>
+      <p>Counter3 : {count}</p>
+      <button onClick={() => setCount((preCount) => preCount + 1)}> 증가 </button>
+    </>
+  );
+}
+
+export default Counter3;
