@@ -18,15 +18,16 @@ function MyForm3() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>
-        <input type="text" name="firstName" onChange={handleChange} value={user.firstName} />
-        <br />
-        <input type="text" name="lastName" onChange={handleChange} value={user.lastName} />
-        <br />
-        <input type="text" name="email" onChange={handleChange} value={user.email} />
-        <br />
-        <input type="submit" value="제출" />
-      </label>
+      <label>First Name : </label>
+      <input type="text" name="firstName" onChange={handleChange} value={user.firstName} />
+      <br />
+      <label>Last Name : </label>
+      <input type="text" name="lastName" onChange={handleChange} value={user.lastName} />
+      <br />
+      <label>Email : </label>
+      <input type="text" name="email" onChange={handleChange} value={user.email} />
+      <br />
+      <input type="submit" value="제출" />
     </form>
   );
 }
