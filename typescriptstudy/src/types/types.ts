@@ -1,7 +1,7 @@
 type HelloPorps = {
   name: string;
   age?: number;
-  fn: () => void;
+  fn?: () => void;
   fn2?: (msg: string) => void;
 };
 
