@@ -1,9 +1,9 @@
 import { Container } from '@mui/material';
 import { AppBar, Toolbar, Typography } from '@mui/material';
-import { List, ListItem, ListItemText } from '@mui/material';
-import './App.css';
-import { useState } from 'react';
-import AddItem from './AddItem';
+// import { List, ListItem, ListItemText } from '@mui/material';
+// import AddItem from './AddItem';
+import ItemList from './components/ItemList';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export type Item = {
   product: string;
@@ -11,10 +11,10 @@ export type Item = {
 };
 
 function App() {
-  const [items, setItems] = useState<Item[]>([]);
-  const addItem = (item: Item) => {
-    setItems([item, ...items]);
-  };
+  const queryClient = new QueryClient();
+  // const addItem = (item: Item) => {
+  //   setItems([item, ...items]);
+  // };
 
   return (
     <Container>
@@ -23,14 +23,9 @@ function App() {
           <Typography variant='h6'>쇼핑 리스트 Shopping List</Typography>
         </Toolbar>
       </AppBar>
-      <AddItem addItem={addItem} />
-      <List>
-        {items.map((item, index) => (
-          <ListItem key={index} divider>
-            <ListItemText primary={item.product} secondary={item.amount} />
-          </ListItem>
-        ))}
-      </List>
+      <QueryClientProvider client={queryClient}>
+        <ItemList />
+      </QueryClientProvider>
     </Container>
   );
 }

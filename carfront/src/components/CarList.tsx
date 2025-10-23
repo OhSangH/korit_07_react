@@ -1,8 +1,8 @@
 // import { CarResponse } from '../types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getCars, deleteCar } from '../api/carapi';
-import { DataGrid, GridColDef, GridCellParams } from '@mui/x-data-grid';
-import { IconButton, Snackbar, Tooltip } from '@mui/material';
+import { DataGrid, GridColDef, GridCellParams, GridToolbar } from '@mui/x-data-grid';
+import { Snackbar, IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import AddCar from './AddCar';
 import EditCar from './EditCar';
@@ -78,7 +78,12 @@ function CarList() {
     return (
       <>
         <AddCar />
-        <DataGrid rows={data} columns={columns} getRowId={(row) => row._links.self.href} />
+        <DataGrid
+          rows={data}
+          columns={columns}
+          getRowId={(row) => row._links.self.href}
+          slots={{ toolbar: GridToolbar }}
+        />
         <Snackbar
           open={open}
           autoHideDuration={2000}
