@@ -1,67 +1,45 @@
 // import { CarResponse } from '../types';
-import { useQuery /* useMutation, useQueryClient */ } from '@tanstack/react-query';
-import { DataGrid, GridColDef /*GridCellParams,*/ } from '@mui/x-data-grid';
-import { Snackbar /* IconButton, Tooltip*/ } from '@mui/material';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { List, ListItem, ListItemText, Snackbar, IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
-// import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import { getItems } from '../api/itemapi';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import { deleteItem, getItems } from '../api/itemapi';
 import AddItem from './AddItem';
+import EditItem from './EditItem';
+// import { ItemResponse } from '../types';
 
 function CarList() {
   const [open, setOpen] = useState(false);
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { data, error, isSuccess } = useQuery({
     queryKey: ['items'],
     queryFn: getItems,
   });
 
-  // const { mutate } = useMutation(deleteCar, {
-  //   onSuccess: () => {
-  //     setOpen(true);
-  //     queryClient.invalidateQueries({ queryKey: ['cars'] }); // 이부분은 useQuery()를 정의한 부분과 관련있다.
+  // const [items, setItem] = useState<ItemResponse[]>([
+  //   {
+  //     product: '',
+  //     amount: 0,
+  //     _links: {
+  //       self: {
+  //         href: '',
+  //       },
+  //     },
   //   },
-  //   onError: (err) => {
-  //     console.log(err);
-  //   },
-  // });
+  // ]);
 
-  const columns: GridColDef[] = [
-    { field: 'product', headerName: 'Product', width: 200 },
-    { field: 'amount', headerName: 'Amount', width: 200 },
-    // {
-    //   field: 'edit',
-    //   headerName: '',
-    //   width: 90,
-    //   sortable: false,
-    //   filterable: false,
-    //   disableColumnMenu: true,
-    //   renderCell: (params: GridCellParams) => <EditCar cardata={params.row} />,
-    // },
-    // {
-    //   field: 'delete',
-    //   headerName: '',
-    //   width: 90,
-    //   sortable: false,
-    //   filterable: false,
-    //   disableColumnMenu: true,
-    //   renderCell: (params: GridCellParams) => (
-    //     <Tooltip title='Delete Car'>
-    //       <IconButton
-    //         aria-label='Delete'
-    //         size='small'
-    //         onClick={() => {
-    //           if (window.confirm(`${params.row.product}제품을 삭제 하시겠습니까?`)) {
-    //             mutate(params.row._links.self.href);
-    //           }
-    //         }}
-    //       >
-    //         <DeleteForeverRoundedIcon fontSize='small' />
-    //       </IconButton>
-    //     </Tooltip>
-    //   ),
-    // },
-  ];
+  // getItems().then((data) => setItem(data));
+
+  const { mutate } = useMutation(deleteItem, {
+    onSuccess: () => {
+      setOpen(true);
+      queryClient.invalidateQueries({ queryKey: ['items'] }); // 이부분은 useQuery()를 정의한 부분과 관련있다.
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   if (!isSuccess) {
     return <span>Loading...🕐</span>;
@@ -73,7 +51,27 @@ function CarList() {
     return (
       <>
         <AddItem />
-        <DataGrid rows={data} columns={columns} getRowId={(row) => row._links.self.href} />
+        <List>
+          {data.map((item, index) => (
+            <ListItem key={index} divider>
+              <ListItemText primary={item.product} secondary={item.amount} />
+              <EditItem itemProp={item} />
+              <Tooltip title='Delete Car'>
+                <IconButton
+                  aria-label='Delete'
+                  size='small'
+                  onClick={() => {
+                    if (window.confirm(`${item.product}제품을 삭제 하시겠습니까?`)) {
+                      mutate(item._links.self.href);
+                    }
+                  }}
+                >
+                  <DeleteForeverRoundedIcon fontSize='small' />
+                </IconButton>
+              </Tooltip>
+            </ListItem>
+          ))}
+        </List>
         <Snackbar
           open={open}
           autoHideDuration={2000}

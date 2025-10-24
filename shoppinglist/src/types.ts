@@ -12,3 +12,8 @@ export type Item = {
   product: string;
   amount: number;
 };
+
+export type ItemEntity = {
+  item: Item;
+  url: string;
+};

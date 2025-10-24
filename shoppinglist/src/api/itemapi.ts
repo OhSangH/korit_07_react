@@ -1,3 +1,4 @@
+import { ItemEntity } from './../types';
 import axios from 'axios';
 import { Item, ItemResponse } from '../types';
 
@@ -13,5 +14,23 @@ export const addItem = async (item: Item): Promise<ItemResponse> => {
     },
   });
 
+  return response.data;
+};
+
+export const deleteItem = async (link: string): Promise<ItemResponse> => {
+  const response = await axios.delete(link, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.data;
+};
+
+export const updateItem = async (itemEntity: ItemEntity): Promise<ItemResponse> => {
+  const response = await axios.put(itemEntity.url, itemEntity.item, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
   return response.data;
 };

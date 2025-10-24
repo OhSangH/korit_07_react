@@ -1,18 +1,29 @@
 import { ChangeEvent, useState } from 'react';
-import { Item } from '../types';
-import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
+import { Item, ItemEntity, ItemResponse } from '../types';
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, Tooltip } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addItem } from '../api/itemapi';
+import { updateItem } from '../api/itemapi';
 import ItemDialogContent from './ItemDialogContent';
+import { EditRounded } from '@mui/icons-material';
 
-function AddItem() {
+type ItemProp = {
+  itemProp: ItemResponse;
+};
+
+function EditItem({ itemProp }: ItemProp) {
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<Item>({
     product: '',
     amount: 0,
   });
 
-  const handleClickOpen = () => setOpen(true);
+  const handleClickOpen = () => {
+    setItem({
+      product: itemProp.product,
+      amount: itemProp.amount,
+    });
+    setOpen(true);
+  };
 
   const handleClickClose = () => setOpen(false);
 
@@ -22,7 +33,7 @@ function AddItem() {
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(addItem, {
+  const { mutate } = useMutation(updateItem, {
     onSuccess: () => {
       queryClient.invalidateQueries(['items']);
     },
@@ -30,7 +41,9 @@ function AddItem() {
   });
 
   const handleSave = () => {
-    mutate(item);
+    const url = itemProp._links.self.href;
+    const itemEntity: ItemEntity = { item, url };
+    mutate(itemEntity);
     setItem({
       product: '',
       amount: 0,
@@ -40,18 +53,20 @@ function AddItem() {
 
   return (
     <>
-      <Button onClick={handleClickOpen} variant='outlined'>
-        New Item
-      </Button>
+      <Tooltip title='Edit Item'>
+        <IconButton onClick={handleClickOpen} size='small' aria-label='edit'>
+          <EditRounded fontSize='small' />
+        </IconButton>
+      </Tooltip>
       <Dialog open={open} onClose={handleClickClose}>
-        <DialogTitle>New Item</DialogTitle>
+        <DialogTitle>Edit Item</DialogTitle>
         <ItemDialogContent item={item} handleChange={handleChange} />
         <DialogActions>
           <Button onClick={handleClickClose} fullWidth>
             Cancel | 취소
           </Button>
           <Button onClick={handleSave} fullWidth>
-            Add | 저장
+            Edit | 수정
           </Button>
         </DialogActions>
       </Dialog>
@@ -59,4 +74,4 @@ function AddItem() {
   );
 }
 
-export default AddItem;
+export default EditItem;

@@ -1,14 +1,7 @@
 import { Container } from '@mui/material';
 import { AppBar, Toolbar, Typography } from '@mui/material';
-// import { List, ListItem, ListItemText } from '@mui/material';
-// import AddItem from './AddItem';
 import ItemList from './components/ItemList';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-export type Item = {
-  product: string;
-  amount: string;
-};
 
 function App() {
   const queryClient = new QueryClient();
