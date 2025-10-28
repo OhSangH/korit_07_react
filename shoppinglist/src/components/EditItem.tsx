@@ -1,16 +1,16 @@
 import { ChangeEvent, useState } from 'react';
-import { Item, ItemEntity, ItemResponse } from '../types';
+import { Item, ItemEntity, ShoppingItem } from '../types';
 import { Button, Dialog, DialogActions, DialogTitle, IconButton, Tooltip } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateItem } from '../api/itemapi';
 import ItemDialogContent from './ItemDialogContent';
 import { EditRounded } from '@mui/icons-material';
 
-type ItemProp = {
-  itemProp: ItemResponse;
+type ItemData = {
+  itemProp: ShoppingItem;
 };
 
-function EditItem({ itemProp }: ItemProp) {
+function EditItem({ itemData }: ItemData) {
   const [open, setOpen] = useState(false);
   const [item, setItem] = useState<Item>({
     product: '',
@@ -19,8 +19,8 @@ function EditItem({ itemProp }: ItemProp) {
 
   const handleClickOpen = () => {
     setItem({
-      product: itemProp.product,
-      amount: itemProp.amount,
+      product: itemData.product,
+      amount: itemData.amount,
     });
     setOpen(true);
   };
@@ -41,7 +41,7 @@ function EditItem({ itemProp }: ItemProp) {
   });
 
   const handleSave = () => {
-    const url = itemProp._links.self.href;
+    const url = itemData._links.self.href;
     const itemEntity: ItemEntity = { item, url };
     mutate(itemEntity);
     setItem({
